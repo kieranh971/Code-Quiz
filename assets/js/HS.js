@@ -9,9 +9,10 @@ wipe.addEventListener("click", function(event){
     location.reload();
 });
 
+//Below variable takes info stored in local storage from the main.js file and makes it available here
 var userScores = localStorage.getItem("allUsers");
 userScores = JSON.parse(userScores);
-
+//Below if statement creates a for loop that appends user scores to a list for the high score board
 if (userScores !== null) {
     for (var i=0; i < userScores.length; i++) {
         var newLi = document.createElement("li");
@@ -19,7 +20,7 @@ if (userScores !== null) {
         highScores.appendChild(newLi);
     }
 }
-
+//Below button returns user to the start of the quiz
 returnBtn.addEventListener("click", function(event){
     window.location.replace("./index.html")
 })

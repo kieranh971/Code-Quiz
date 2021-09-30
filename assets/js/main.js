@@ -51,7 +51,7 @@ startBtn.addEventListener("click", function(event){
     setTime(); // Starts timer on click of start button
     render(quiz); // Renders quiz on click of Start button
 });
-
+// Timer function
 function setTime() {
     var timerInterval = setInterval(function() {
       secondsLeft--;
@@ -106,16 +106,16 @@ function validateAnswer(event) {
 
     if (quiz >= questions.length) {
         EndQuiz(); // Runs end quiz function after all questions have been answered
-        newDiv.textContent = "End of quiz!";
+        newDiv.textContent = "You're done!";
     } else {
         render(quiz);
     } QuestionsDiv.appendChild(newDiv);
 };
 
-// Ends quiz, brings user to submission page
+// Ends quiz, prompts user to submit initials. On submission, user is taken to highscore page
 function EndQuiz() {
     QuestionsDiv.textContent = ""; // Resets this section in HTML to empty
-    timer = ""; // Resets timer to empty, don't want to see this on display page
+    timer = ""; // Sets timer to empty
     //Creates header for submission page
     var newh1 = document.createElement("h1");
     newh1.setAttribute("id", "newh1");
@@ -127,7 +127,7 @@ function EndQuiz() {
     newPtag.setAttribute("id", "newPtag");
 
     QuestionsDiv.appendChild(newPtag);
-
+    // Creates a paragraph to display final score
     if(secondsLeft >= 0) {
         var RemainingTime = secondsLeft;
         var newP2tag = document.createElement("p");
@@ -136,19 +136,20 @@ function EndQuiz() {
 
         QuestionsDiv.appendChild(newP2tag);
     }
-
+    // Form submission section
+    // Create new label
     var newLabel = document.createElement("label");
     newLabel.setAttribute("id", "newLabel");
     newLabel.textContent = "Please submit your initials: ";
 
     QuestionsDiv.appendChild(newLabel);
-
+    // Create input box, leave as empty
     var inputEl = document.createElement("input");
     inputEl.setAttribute("id", "inputEl");
     inputEl.textContent = "";
 
     QuestionsDiv.appendChild(inputEl);
-
+    // Create submission button
     var submitBtn = document.createElement("button");
     submitBtn.setAttribute("type", "submit");
     submitBtn.setAttribute("id", "submit-button");
@@ -156,28 +157,28 @@ function EndQuiz() {
 
     QuestionsDiv.appendChild(submitBtn);
 
-    //Need a click event to store scores in local storage
-
+    // Need a click event to store scores in local storage
     submitBtn.addEventListener("click", function(event) {
         var userInitials = inputEl.value;
 
         if (userInitials === null) {
             alert("Please submit your initials");
-        } else {
+        } else { // Stores users initials and scores in object.
             var score = {
                 initials: userInitials,
                 final: RemainingTime
             }
             // console.log(score); // Test
+            // Creating an empty array to store user intiials and scores in
             var allUsers = localStorage.getItem("allUsers");
             if (allUsers === null) {
                 allUsers = [];
             } else {
                 allUsers = JSON.parse(allUsers);
             }
-            allUsers.push(score);
+            allUsers.push(score); // Pushes user info into empty array
             var newScore = JSON.stringify(allUsers);
-            localStorage.setItem("allUsers", newScore);
+            localStorage.setItem("allUsers", newScore); // Stores info in local storage
             window.location.replace("./HS.html");
             }
     });
