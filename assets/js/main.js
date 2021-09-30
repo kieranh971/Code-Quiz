@@ -1,17 +1,4 @@
 // console.log("I'm connected");
-
-// GIVEN I am taking a code quiz
-// WHEN I click the start button
-// THEN a timer starts and I am presented with a question
-// WHEN I answer a question
-// THEN I am presented with another question
-// WHEN I answer a question incorrectly
-// THEN time is subtracted from the clock
-// WHEN all questions are answered or the timer reaches 0
-// THEN the game is over
-// WHEN the game is over
-// THEN I can save my initials and set my score on the board
-
 //Array of objects. Contains contents of the quiz
 var questions = [
     {
@@ -59,8 +46,10 @@ var olNew = document.createElement("ol"); // Will create list out of options arr
 // When user clicks start quiz button, quiz will begin
 startBtn.addEventListener("click", function(event){
     event.preventDefault();
-    // console.log("start"); // For testing purposes
+    console.log("start"); // For testing purposes
     // console.log(setTime());
+    setTime(); // Starts timer on click of start button
+    render(quiz); // Renders quiz on click of Start button
 });
 
 function setTime() {
@@ -73,8 +62,7 @@ function setTime() {
       }
   
     }, 1000);
-    render(quiz); // Renders quiz
-  };
+};
 
 // Below function renders questions and options to page
 function render(quiz) {
@@ -126,13 +114,13 @@ function validateAnswer(event) {
 
 // Ends quiz, brings user to submission page
 function EndQuiz() {
-    QuestionsDiv.textContent = "";
-    timer = "";
-
+    QuestionsDiv.textContent = ""; // Resets this section in HTML to empty
+    timer = ""; // Resets timer to empty, don't want to see this on display page
+    //Creates header for submission page
     var newh1 = document.createElement("h1");
     newh1.setAttribute("id", "newh1");
     newh1.textContent = "End of quiz!";
-
+    //Must always append a created element so it displays on the page
     QuestionsDiv.appendChild(newh1);
 
     var newPtag = document.createElement("p");
@@ -144,8 +132,53 @@ function EndQuiz() {
         var RemainingTime = secondsLeft;
         var newP2tag = document.createElement("p");
         clearInterval();
-        newPtag.textContent = "Your final score is: " + highscore;
+        newPtag.textContent = "Your final score is: " + RemainingTime;
 
         QuestionsDiv.appendChild(newP2tag);
     }
+
+    var newLabel = document.createElement("label");
+    newLabel.setAttribute("id", "newLabel");
+    newLabel.textContent = "Please submit your initials: ";
+
+    QuestionsDiv.appendChild(newLabel);
+
+    var inputEl = document.createElement("input");
+    inputEl.setAttribute("id", "inputEl");
+    inputEl.textContent = "";
+
+    QuestionsDiv.appendChild(inputEl);
+
+    var submitBtn = document.createElement("button");
+    submitBtn.setAttribute("type", "submit");
+    submitBtn.setAttribute("id", "submit-button");
+    submitBtn.textContent = "Submit";
+
+    QuestionsDiv.appendChild(submitBtn);
+
+    //Need a click event to store scores in local storage
+
+    submitBtn.addEventListener("click", function(event) {
+        var userInitials = inputEl.value;
+
+        if (userInitials === null) {
+            alert("Please submit your initials");
+        } else {
+            var score = {
+                initials: userInitials,
+                final: RemainingTime
+            }
+            // console.log(score); // Test
+            var allUsers = localStorage.getItem("allUsers");
+            if (allUsers === null) {
+                allUsers = [];
+            } else {
+                allUsers = JSON.parse(allUsers);
+            }
+            allUsers.push(score);
+            var newScore = JSON.stringify(allUsers);
+            localStorage.setItem("allUsers", newScore);
+            window.location.replace("./HS.html");
+            }
+    });
 };
